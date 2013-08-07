@@ -18,6 +18,10 @@ onload = function() {
       boxDom.style.left = i * boxWidth + 'px';
       boxDom.style.top = j * boxHeight + 'px';
       boardDom.appendChild(boxDom);
+      var text = document.createElement('span');
+      text.className = 'text';
+      boxDom.appendChild(text);
+      box.text = text;
 
       boxDom.onclick = function(e) {
         if (selectedBox)
@@ -31,7 +35,7 @@ onload = function() {
   for (var i = 0; i < 81; ++i) {
     if (solver.picks[i]) {
       board.boxes[i].setValue(solver.picks[i]);
-      board.boxes[i].domElement.innerHTML = board.boxes[i].value;
+      board.boxes[i].text.innerHTML = board.boxes[i].value;
     }
   }
 

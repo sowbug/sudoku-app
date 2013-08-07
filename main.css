@@ -21,3 +21,9 @@ body {
   color: red;
   font-weight: bold;
 }
+
+.text {
+  display: inline-block;
+  line-height: 50px;
+  vertical-align: middle;
+}
