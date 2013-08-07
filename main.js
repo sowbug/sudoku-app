@@ -30,12 +30,19 @@ onload = function() {
       }.bind(boxDom);
     }
   }
+  var solvedBoard = new Board();
   var solver = new Solver();
-  solver.start(board);
+  solver.start(solvedBoard);
   for (var i = 0; i < 81; ++i) {
-    if (solver.picks[i]) {
-      board.boxes[i].setValue(solver.picks[i]);
-      board.boxes[i].text.innerHTML = board.boxes[i].value;
+    if (solver.picks[i])
+      solvedBoard.boxes[i].setValue(solver.picks[i]);
+  }
+  var generator = new Generator();
+  var generatedBoard = generator.start(solvedBoard);
+  for (var i = 0; i < 81; ++i) {
+    if (generatedBoard.boxes[i].value) {
+      board.boxes[i].setValue(generatedBoard.boxes[i].value);
+      board.boxes[i].text.innerHTML = generatedBoard.boxes[i].value;
     }
   }
 
