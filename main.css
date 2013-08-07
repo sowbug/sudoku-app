@@ -1,0 +1,23 @@
+body {
+  background-color: #ffd;
+}
+
+.box {
+  font-family: helvetica, arial, sans-serif;
+  font-size: 18px;
+  text-align: center;
+  border: 1px solid black;
+  max-height: 50px;
+  max-width: 50px;
+  min-height: 50px;
+  min-width: 50px;
+}
+
+.selected {
+  background-color: #8f8;
+}
+
+.invalid {
+  color: red;
+  font-weight: bold;
+}

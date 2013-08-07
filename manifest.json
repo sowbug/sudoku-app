@@ -1,0 +1,11 @@
+{
+  "name": "Sudoku",
+  "description": "The game of Sudoku.",
+  "version": "0.0.1.0",
+  "app": {
+    "background": {
+      "scripts": ["background.js"]
+    }
+  },
+  "icons": { "128": "icon128.png" }
+}
