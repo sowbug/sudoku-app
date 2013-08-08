@@ -11,11 +11,10 @@ function shuffle(array) {
 }
 
 Generator = function() {
-  
 };
 
 Generator.prototype.start = function(board) {
-  this.generatedBoard = new Board();
+  var generatedBoard = new Board();
   this.boxIndexes = [];
   for (var i = 0; i < 81; ++i)
     this.boxIndexes.push(i);
@@ -23,11 +22,11 @@ Generator.prototype.start = function(board) {
 
   for (var i = 0; i < 81; ++i) {
     var boxIndex = this.boxIndexes[i];
-    var candidates = this.generatedBoard.getCandidates(i);
+    var candidates = generatedBoard.getCandidates(boxIndex);
     if (candidates.length == 0)
       break;
     if (candidates.length > 1)
-      this.generatedBoard.boxes[boxIndex].setValue(board.boxes[boxIndex].value);
+      generatedBoard.boxes[boxIndex].setValue(board.boxes[boxIndex].value);
   }
-  return this.generatedBoard;
+  board.copy(generatedBoard);
 };

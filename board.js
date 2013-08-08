@@ -34,7 +34,7 @@ Board.prototype.getBox = function(column, row) {
 
 Board.prototype.copy = function(sourceBoard) {
   for (var i = 0; i < 81; ++i)
-    this.boxes[i].setValue(sourceBoard.boxes[i].value);
+    this.boxes[i].setValue(new Number(sourceBoard.boxes[i].value));
 }
 
 Board.prototype.addMask = function(column, row, square, value) {

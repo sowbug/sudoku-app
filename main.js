@@ -13,14 +13,13 @@ function newPuzzle(boardDom) {
     }
   }
   var solver = new Solver();
-  var result = solver.start(board);
+  solver.start(board);
   var generator = new Generator();
-  var generatedBoard = generator.start(board);
+  generator.start(board);
   for (var i = 0; i < 81; ++i) {
     var box = board.boxes[i];
-    if (generatedBoard.boxes[i].value) {
-      box.setValue(generatedBoard.boxes[i].value);
-      box.text.innerHTML = generatedBoard.boxes[i].value;
+    if (box.value > 0) {
+      box.text.innerHTML = box.value;
       box.domElement.classList.add('fixed');
     } else {
       box.text.innerHTML = '';
