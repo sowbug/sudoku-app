@@ -1,6 +1,6 @@
 {
   "name": "Sudoku",
-  "description": "The game of Sudoku as a Chrome Packaged App.",
+  "description": "Play Sudoku on your Chromebook!",
   "version": "0.0.1.0",
   "app": {
     "background": {
