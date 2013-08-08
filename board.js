@@ -8,6 +8,8 @@ Board = function() {
   // Mark each container as having nothing in it.
   this.clearMasks();
 
+  this.gameComplete = false;
+
   // Create each cell with its memberships.
   for (var i = 0; i < 81; ++i) {
     // Columns are 0..8 left to right.
@@ -31,9 +33,8 @@ Board.prototype.setBox = function(index, value) {
   this.boxes[index].setValue(value);
   if (!wasSet && box.isSet()) {
     changed = true;
-    if (this.getFilledBoxCount() == 81 && this.check()) {
-      console.log("human wins");
-    }
+    if (this.getFilledBoxCount() == 81 && this.check())
+      this.gameComplete = true;
   } else if (wasSet && !box.isSet()) {
     changed = true;
   }

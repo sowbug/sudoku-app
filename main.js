@@ -1,9 +1,11 @@
-var selectedBox = -1;
 var boardHasProblem = false;
-var boxWidth = 50;
-var boxHeight = 50;
-var startTime;
 var pauseTime;
+var selectedBox = -1;
+var startTime;
+
+function selectBox(index) {
+
+}
 
 function newPuzzle(boardDom) {
   var board = new Board();
@@ -25,6 +27,7 @@ function newPuzzle(boardDom) {
       box.domElement.classList.add('fixed');
     } else {
       box.domElement.innerHTML = '';
+      box.domElement.classList.remove('fixed');
       box.domElement.onclick = function(e) {
         if (selectedBox >= 0)
           board.getBox(selectedBox).domElement.classList.remove('selected');
@@ -35,6 +38,7 @@ function newPuzzle(boardDom) {
   }
   startTime = new Date();
   pauseTime = null;
+  gameComplete = false;
   return board;
 }
 
@@ -42,7 +46,7 @@ function createBoardBox(majorRowIndex, squareIndex,
   minorRowIndex, boxIndex) {
   var td = document.createElement("td");
   var index = majorRowIndex * 27 + squareIndex * 3
-    + minorRowIndex * 9 + boxIndex;
+  + minorRowIndex * 9 + boxIndex;
   td.id = "box-" + index;
   td.classList.add("box");
   return td;
@@ -102,6 +106,8 @@ onload = function() {
   var board = newPuzzle(boardDom);
 
   var timerFunction = function() {
+    if (board.gameComplete)
+      return;
     if (pauseTime) {
       document.querySelector("#clock").innerHTML = "Resume";
     } else {
@@ -122,9 +128,8 @@ onload = function() {
         elapsedString = hours + ":" + elapsedString;
       document.querySelector("#clock").innerHTML = elapsedString;
     }
-    setTimeout(timerFunction, 100);
   };
-  setTimeout(timerFunction, 500);
+  setInterval(timerFunction, 100);
 
   var checkBoard = function() {
     if (selectedBox >= 0) {
@@ -155,14 +160,23 @@ onload = function() {
       changed |= board.clearBox(selectedBox);
       box.domElement.innerHTML = '';
     }
-    if (changed && boardHasProblem) {
-      checkBoard();
+    if (changed) {
+      if (boardHasProblem) {
+        checkBoard();
+      } else {
+        if (board.gameComplete) {
+          boardDom.classList.add("complete");
+        }
+      }
     }
   };
+
   document.querySelector("#new").onclick = function(e) {
+    boardDom.classList.remove("complete");
+    boardDom.classList.remove("blurred");
     board = newPuzzle(boardDom);
-    document.querySelector("#board").classList.remove("blurred");
   };
+
   document.querySelector("#check").onclick = function(e) {
     checkBoard();
   };
