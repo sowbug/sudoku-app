@@ -25,12 +25,13 @@ Box.prototype.setValue = function(newValue) {
     return false;
   }
 
-  // Zero == clear it.
-  if (newValue > 0 && !this.isValidValue(newValue))
-    return false;
+  // if (newValue > 0 && !this.isValidValue(newValue))
+  //   return false;
 
   this.board.removeMask(this.column, this.row, this.square, this.value);
   this.value = newValue;
+
+  // Zero == clear it.
   if (this.value > 0)
     this.board.addMask(this.column, this.row, this.square, this.value);
   return true;
@@ -42,4 +43,14 @@ Box.prototype.isValidValue = function(value) {
     return false;
   }
   return !this.board.isMasked(this.column, this.row, this.square, value);
+};
+
+Box.prototype.unselect = function() {
+  this.domElement.classList.remove('selected');
+  return null;
+};
+
+Box.prototype.select = function() {
+  this.domElement.classList.add('selected');
+  return this;
 };

@@ -1,55 +1,87 @@
-onload = function() {
+var selectedBox;
+var boxWidth = 50;
+var boxHeight = 50;
+
+function newPuzzle(boardDom) {
   var board = new Board();
+  for (var j = 0; j < 9; ++j) {
+    for (var i = 0; i < 9; ++i) {
+      var box = board.getBox(i, j);
+      box.domElement = document.querySelector("#box-" + i + j * 9);
+      box.domElement.box = box;
+      box.text = box.domElement.getElementsByTagName('span')[0];
+    }
+  }
+  var solver = new Solver();
+  solver.start(board);
+  for (var i = 0; i < 81; ++i) {
+    board.boxes[i].setValue(solver.picks[i] ? solver.picks[i] : 0);
+  }
+  var generator = new Generator();
+  var generatedBoard = generator.start(board);
+  for (var i = 0; i < 81; ++i) {
+    var box = board.boxes[i];
+    if (generatedBoard.boxes[i].value) {
+      box.setValue(generatedBoard.boxes[i].value);
+      box.text.innerHTML = generatedBoard.boxes[i].value;
+      box.domElement.classList.add('fixed');
+    } else {
+      box.text.innerHTML = '';
+      box.domElement.onclick = function(e) {
+        if (selectedBox)
+          selectedBox = selectedBox.unselect();
+        selectedBox = this.box.select();
+      }.bind(box.domElement);
+    }
+  }
+  return board;
+}
+
+function createBoard() {
   var boardDom = document.querySelector("#board");
-  var boxWidth = 50;
-  var boxHeight = 50;
 
   for (var j = 0; j < 9; ++j) {
     for (var i = 0; i < 9; ++i) {
       var boxDom = document.createElement('div');
-      var box = board.getBox(i, j);
-
-      box.domElement = boxDom;
-
-      boxDom.box = box;
-      boxDom.id = 'box-' + box.index;
+      boxDom.id = 'box-' + i + j * 9;
       boxDom.className = 'box';
       boxDom.style.position = 'absolute';
       boxDom.style.left = i * boxWidth + 'px';
       boxDom.style.top = j * boxHeight + 'px';
+      if ((i + 1) % 3 == 0 && i < 8)
+        boxDom.classList.add('square-right');
+      if ((j + 1) % 3 == 0 && j < 8)
+        boxDom.classList.add('square-bottom');
       boardDom.appendChild(boxDom);
       var text = document.createElement('span');
       text.className = 'text';
       boxDom.appendChild(text);
-      box.text = text;
+    }
+  }
+  return boardDom;
+}
 
-      boxDom.onclick = function(e) {
-        if (selectedBox)
-          selectedBox = selectedBox.unselect();
-        selectedBox = this.box.select();
-      }.bind(boxDom);
-    }
-  }
-  var solvedBoard = new Board();
-  var solver = new Solver();
-  solver.start(solvedBoard);
-  for (var i = 0; i < 81; ++i) {
-    if (solver.picks[i])
-      solvedBoard.boxes[i].setValue(solver.picks[i]);
-  }
-  var generator = new Generator();
-  var generatedBoard = generator.start(solvedBoard);
-  for (var i = 0; i < 81; ++i) {
-    if (generatedBoard.boxes[i].value) {
-      board.boxes[i].setValue(generatedBoard.boxes[i].value);
-      board.boxes[i].text.innerHTML = generatedBoard.boxes[i].value;
-    }
-  }
+onload = function() {
+  var boardDom = createBoard();
+  var board = newPuzzle(boardDom);
 
   document.onkeypress = function(e) {
     if (!selectedBox)
       return;
-    if (e.keyCode >= 49 && e.keyCode <= 58)
-      selectedBox.setValue(e.keyCode - 48);
+
+    if (e.keyCode >= 49 && e.keyCode <= 58) {
+      var value = e.keyCode - 48;
+      selectedBox.setValue(value);
+      selectedBox.text.innerHTML = value;
+    }
+
+    // Why can't I get the delete key?
+    if (e.keyCode == 32 || e.keyCode == 48) {
+      selectedBox.setValue(0);
+      selectedBox.text.innerHTML = '';
+    }
+  };
+  document.querySelector("#new").onclick = function(e) {
+    board = newPuzzle(boardDom);
   };
 };

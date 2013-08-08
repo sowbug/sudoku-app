@@ -17,6 +17,10 @@ body {
   background-color: #8f8;
 }
 
+.fixed {
+  color: gray;
+}
+
 .invalid {
   color: red;
   font-weight: bold;
@@ -26,4 +30,17 @@ body {
   display: inline-block;
   line-height: 50px;
   vertical-align: middle;
+}
+
+.square-right {
+  border-right: 4px solid #333;
+}
+
+.square-bottom {
+  border-bottom: 4px solid #333;
+}
+
+#controls {
+  position: absolute;
+  top: 460px;
 }

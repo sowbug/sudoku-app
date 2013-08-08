@@ -3,6 +3,6 @@ chrome.app.runtime.onLaunched.addListener(function() {
     'id': 'sudoku',
     'frame': 'chrome',
     'width': 480,
-    'height': 640
+    'height': 490
   });
 });
