@@ -1,4 +1,4 @@
-var selectedBox;
+var selectedBox = -1;
 var boardHasProblem = false;
 var boxWidth = 50;
 var boxHeight = 50;
@@ -7,8 +7,8 @@ function newPuzzle(boardDom) {
   var board = new Board();
   for (var j = 0; j < 9; ++j) {
     for (var i = 0; i < 9; ++i) {
-      var box = board.getBox(i, j);
-      box.domElement = document.querySelector("#box-" + i + j * 9);
+      var box = board.getBoxByColumnAndRow(i, j);
+      box.domElement = document.querySelector("#box-" + box.index);
       box.domElement.box = box;
       box.text = box.domElement.getElementsByTagName('span')[0];
     }
@@ -18,16 +18,17 @@ function newPuzzle(boardDom) {
   var generator = new Generator();
   generator.start(board);
   for (var i = 0; i < 81; ++i) {
-    var box = board.boxes[i];
+    var box = board.getBox(i);
     if (box.value > 0) {
       box.text.innerHTML = box.value;
       box.domElement.classList.add('fixed');
     } else {
       box.text.innerHTML = '';
       box.domElement.onclick = function(e) {
-        if (selectedBox)
-          selectedBox = selectedBox.unselect();
-        selectedBox = this.box.select();
+        if (selectedBox >= 0)
+          board.getBox(selectedBox).domElement.classList.remove('selected');
+        selectedBox = this.box.index;
+        board.getBox(selectedBox).domElement.classList.add('selected');
       }.bind(box.domElement);
     }
   }
@@ -40,7 +41,8 @@ function createBoard() {
   for (var j = 0; j < 9; ++j) {
     for (var i = 0; i < 9; ++i) {
       var boxDom = document.createElement('div');
-      boxDom.id = 'box-' + i + j * 9;
+      var boxIndex = i + j * 9;
+      boxDom.id = 'box-' + boxIndex;
       boxDom.className = 'box';
       boxDom.style.position = 'absolute';
       boxDom.style.left = i * boxWidth + 'px';
@@ -63,43 +65,33 @@ onload = function() {
   var board = newPuzzle(boardDom);
 
   var checkBoard = function() {
-    if (selectedBox)
-      selectedBox = selectedBox.unselect();
-    boardHasProblem = false;
-    for (var i = 0; i < 81; ++i) {
-      var box = board.boxes[i];
-      var value = box.value;
-      if (value == 0) {
-        box.domElement.classList.remove('invalid');
-        continue;
-      }
-      box.setValue(0);
-      var isValid = box.isValidValue(value);
-      box.setValue(value);
-      if (isValid) {
-        box.domElement.classList.remove('invalid');
-      } else {
-        boardHasProblem = true;
-        box.domElement.classList.add('invalid');
-      }
+    if (selectedBox >= 0) {
+      board.getBox(selectedBox).domElement.classList.remove('selected');
+      selectedBox = -1;
     }
+    var invalidBoxes = board.getInvalidBoxes();
+    boardHasProblem = invalidBoxes.length > 0;
+    for (var i = 0; i < 81; ++i)
+      board.getBox(i).domElement.classList.remove('invalid');
+    for (var i in invalidBoxes)
+      board.getBox(invalidBoxes[i]).domElement.classList.add('invalid');
   };
 
   document.onkeypress = function(e) {
-    if (!selectedBox)
+    if (selectedBox < 0)
       return;
-
+    var box = board.getBox(selectedBox);
     var changed = false;
     if (e.keyCode >= 49 && e.keyCode <= 58) {
       var value = e.keyCode - 48;
-      changed = selectedBox.setValue(value);
-      selectedBox.text.innerHTML = value;
+      changed = board.setBox(selectedBox, value);
+      box.text.innerHTML = value;
     }
 
     // Why can't I get the delete key?
     if (e.keyCode == 32 || e.keyCode == 48) {
-      changed |= selectedBox.setValue(0);
-      selectedBox.text.innerHTML = '';
+      changed |= board.clearBox(selectedBox);
+      box.text.innerHTML = '';
     }
     if (changed && boardHasProblem) {
       checkBoard();

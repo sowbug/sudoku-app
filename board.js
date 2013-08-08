@@ -24,6 +24,26 @@ Board = function() {
   }
 };
 
+Board.prototype.setBox = function(index, value) {
+  var changed = false;
+  var box = this.boxes[index];
+  var wasSet = box.isSet();
+  this.boxes[index].setValue(value);
+  if (!wasSet && box.isSet()) {
+    changed = true;
+    if (this.getFilledBoxCount() == 81 && this.check()) {
+      console.log("human wins");
+    }
+  } else if (wasSet && !box.isSet()) {
+    changed = true;
+  }
+  return changed;
+};
+
+Board.prototype.clearBox = function(index) {
+  return this.setBox(index, 0);
+};
+
 Board.prototype.clearMasks = function() {
   for (var i = 0; i < 9; ++i) {
     this.squares[i] = 0;
@@ -32,8 +52,12 @@ Board.prototype.clearMasks = function() {
   }
 };
 
-Board.prototype.getBox = function(column, row) {
+Board.prototype.getBoxByColumnAndRow = function(column, row) {
   return this.boxes[column + row * 9];
+};
+
+Board.prototype.getBox = function(index) {
+  return this.boxes[index];
 };
 
 Board.prototype.copy = function(sourceBoard) {
@@ -75,3 +99,32 @@ Board.prototype.getCandidates = function(boxIndex) {
   }
   return candidates;
 };
+
+Board.prototype.getFilledBoxCount = function() {
+  var result = 0;
+  for (var i = 0; i < 81; ++i)
+    if (this.boxes[i].value > 0)
+      ++result;
+  return result;
+}
+
+Board.prototype.getInvalidBoxes = function() {
+  var invalidBoxes = [];
+  for (var i = 0; i < 81; ++i) {
+    var box = this.getBox(i);
+    var value = box.value;
+    if (value == 0) {
+      continue;
+    }
+    box.setValue(0);
+    var isValid = box.isValidValue(value);
+    box.setValue(value);
+    if (!isValid)
+      invalidBoxes.push(i);
+  }
+  return invalidBoxes;
+}
+
+Board.prototype.check = function() {
+  return this.getInvalidBoxes().length == 0;
+}

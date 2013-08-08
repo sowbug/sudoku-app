@@ -42,12 +42,12 @@ Box.prototype.isValidValue = function(value) {
   return !this.board.isMasked(this.column, this.row, this.square, value);
 };
 
-Box.prototype.unselect = function() {
-  this.domElement.classList.remove('selected');
-  return null;
-};
+Box.prototype.isSet = function(value) {
+  return this.value > 0;
+}
 
-Box.prototype.select = function() {
-  this.domElement.classList.add('selected');
-  return this;
-};
+Box.prototype.isValid = function() {
+  if (this.value == 0)
+    return true;
+  return this.isValidValue(this.value);
+}
