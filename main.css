@@ -1,8 +1,13 @@
+html, table, tr, td {
+  margin: 0;
+  padding: 0;
+}
+
 body {
   background-color: #ffd;
 }
 
-.box {
+/*.box {
   font-family: helvetica, arial, sans-serif;
   font-size: 18px;
   text-align: center;
@@ -12,7 +17,7 @@ body {
   min-height: 50px;
   min-width: 50px;
 }
-
+*/
 .selected {
   background-color: #9f9;
 }
@@ -32,15 +37,16 @@ body {
   vertical-align: middle;
 }
 
-.square-right {
+/*.square-right {
   border-right: 4px solid #333;
 }
 
 .square-bottom {
   border-bottom: 4px solid #333;
 }
+*/
 
-#board {
+/*#board {
   height: 450px;
 }
 
@@ -48,7 +54,30 @@ body {
   position: absolute;
   top: 460px;
 }
+*/
 
 .blurred {
   -webkit-filter: grayscale(0.8) blur(6px);
+}
+
+table {
+  border-collapse: collapse;
+  border-spacing: 0;
+}
+
+.board {
+  border: 2px solid red;
+}
+
+.box {
+  font-family: "helvetica neue";
+  font-size: 32px;
+  border: 1px solid black;
+  width: 40px;
+  height: 40px;
+  text-align: center;
+}
+
+.square {
+  border: 4px solid blue;
 }
