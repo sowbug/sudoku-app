@@ -1,4 +1,5 @@
 var selectedBox;
+var boardHasProblem = false;
 var boxWidth = 50;
 var boxHeight = 50;
 
@@ -61,27 +62,53 @@ onload = function() {
   var boardDom = createBoard();
   var board = newPuzzle(boardDom);
 
+  var checkBoard = function() {
+    if (selectedBox)
+      selectedBox = selectedBox.unselect();
+    boardHasProblem = false;
+    for (var i = 0; i < 81; ++i) {
+      var box = board.boxes[i];
+      var value = box.value;
+      if (value == 0) {
+        box.domElement.classList.remove('invalid');
+        continue;
+      }
+      box.setValue(0);
+      var isValid = box.isValidValue(value);
+      box.setValue(value);
+      if (isValid) {
+        box.domElement.classList.remove('invalid');
+      } else {
+        boardHasProblem = true;
+        box.domElement.classList.add('invalid');
+      }
+    }
+  };
+
   document.onkeypress = function(e) {
     if (!selectedBox)
       return;
 
+    var changed = false;
     if (e.keyCode >= 49 && e.keyCode <= 58) {
       var value = e.keyCode - 48;
-      selectedBox.setValue(value);
+      changed = selectedBox.setValue(value);
       selectedBox.text.innerHTML = value;
     }
 
     // Why can't I get the delete key?
     if (e.keyCode == 32 || e.keyCode == 48) {
-      selectedBox.setValue(0);
+      changed |= selectedBox.setValue(0);
       selectedBox.text.innerHTML = '';
+    }
+    if (changed && boardHasProblem) {
+      checkBoard();
     }
   };
   document.querySelector("#new").onclick = function(e) {
     board = newPuzzle(boardDom);
   };
   document.querySelector("#check").onclick = function(e) {
-    var solver = new Solver();
-    console.log(solver.start(board));
+    checkBoard();
   };
 };

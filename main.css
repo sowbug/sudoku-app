@@ -14,7 +14,7 @@ body {
 }
 
 .selected {
-  background-color: #8f8;
+  background-color: #9f9;
 }
 
 .fixed {
@@ -22,7 +22,7 @@ body {
 }
 
 .invalid {
-  color: red;
+  background-color: #f88;
   font-weight: bold;
 }
 

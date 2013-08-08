@@ -6,11 +6,7 @@ Board = function() {
   this.rows = [];
 
   // Mark each container as having nothing in it.
-  for (var i = 0; i < 9; ++i) {
-    this.squares[i] = 0;
-    this.columns[i] = 0;
-    this.rows[i] = 0;
-  }
+  this.clearMasks();
 
   // Create each cell with its memberships.
   for (var i = 0; i < 81; ++i) {
@@ -28,6 +24,14 @@ Board = function() {
   }
 };
 
+Board.prototype.clearMasks = function() {
+  for (var i = 0; i < 9; ++i) {
+    this.squares[i] = 0;
+    this.columns[i] = 0;
+    this.rows[i] = 0;
+  }
+};
+
 Board.prototype.getBox = function(column, row) {
   return this.boxes[column + row * 9];
 };
@@ -38,17 +42,20 @@ Board.prototype.copy = function(sourceBoard) {
 }
 
 Board.prototype.addMask = function(column, row, square, value) {
+  if (value == 0)
+    return;
   var mask = 1 << value;
   this.columns[column] |= mask;
   this.rows[row] |= mask;
   this.squares[square] |= mask;
 };
 
-Board.prototype.removeMask = function(column, row, square, value) {
-  var mask = ~(1 << value);
-  this.columns[column] &= mask;
-  this.rows[row] &= mask;
-  this.squares[square] &= mask;
+Board.prototype.regenerateMasks = function() {
+  this.clearMasks();
+  for (var i = 0; i < 81; ++i) {
+    var box = this.boxes[i];
+    this.addMask(box.column, box.row, box.square, box.value)
+  }
 };
 
 Board.prototype.isMasked = function(column, row, square, value) {
@@ -63,7 +70,7 @@ Board.prototype.getCandidates = function(boxIndex) {
   var box = this.boxes[boxIndex];
   var candidates = [];
   for (var i = 1; i <= 9; ++i) {
-    if (box.isValidValue(i))
+    if (box.isValidValue(i) || i == box.value)
       candidates.push(i);
   }
   return candidates;
