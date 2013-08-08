@@ -2,6 +2,8 @@ var selectedBox = -1;
 var boardHasProblem = false;
 var boxWidth = 50;
 var boxHeight = 50;
+var startTime;
+var pauseTime;
 
 function newPuzzle(boardDom) {
   var board = new Board();
@@ -32,6 +34,8 @@ function newPuzzle(boardDom) {
       }.bind(box.domElement);
     }
   }
+  startTime = new Date();
+  pauseTime = null;
   return board;
 }
 
@@ -63,6 +67,31 @@ function createBoard() {
 onload = function() {
   var boardDom = createBoard();
   var board = newPuzzle(boardDom);
+
+  var timerFunction = function() {
+    if (pauseTime) {
+      document.querySelector("#clock").innerHTML = "Resume";
+    } else {
+      var currentTime = new Date();
+      var elapsed = Math.floor((currentTime - startTime) / 1000);
+      var hours = Math.floor(elapsed / 3600);
+      var minutes = Math.floor((elapsed - hours * 3600) / 60);
+      var seconds = Math.floor(elapsed - hours * 3600 - minutes * 60);
+      var elapsedString = '';
+      if (seconds < 10)
+        elapsedString = "0";
+      elapsedString = ":" + elapsedString + seconds;
+      if (minutes < 9)
+        elapsedString = "0" + minutes + elapsedString;
+      else
+        elapsedString = minutes + elapsedString;
+      if (hours > 0)
+        elapsedString = hours + ":" + elapsedString;
+      document.querySelector("#clock").innerHTML = elapsedString;
+    }
+    setTimeout(timerFunction, 100);
+  };
+  setTimeout(timerFunction, 500);
 
   var checkBoard = function() {
     if (selectedBox >= 0) {
@@ -99,8 +128,20 @@ onload = function() {
   };
   document.querySelector("#new").onclick = function(e) {
     board = newPuzzle(boardDom);
+    document.querySelector("#board").classList.remove("blurred");
   };
   document.querySelector("#check").onclick = function(e) {
     checkBoard();
+  };
+
+  document.querySelector("#clock").onclick = function(e) {
+    var classList = document.querySelector("#board").classList;
+    if (classList.toggle("blurred")) {
+      pauseTime = new Date();
+    } else {
+      var elapsed = new Date() - pauseTime;
+      pauseTime = null;
+      startTime.setTime(startTime.getTime() + elapsed);
+    }
   };
 };

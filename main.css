@@ -40,7 +40,15 @@ body {
   border-bottom: 4px solid #333;
 }
 
+#board {
+  height: 450px;
+}
+
 #controls {
   position: absolute;
   top: 460px;
+}
+
+.blurred {
+  -webkit-filter: grayscale(0.8) blur(6px);
 }
