@@ -1,0 +1,12 @@
+#!/bin/bash
+
+TMP_FOLDER=/tmp/sudoku-temp
+
+rm -rf $TMP_FOLDER
+mkdir -p $TMP_FOLDER
+cp *.js *.png *.css *.html *.js *.json $TMP_FOLDER
+
+rm -f ~/sudoku-cws.zip
+pushd $TMP_FOLDER
+zip ~/sudoku-cws.zip -r .
+popd
