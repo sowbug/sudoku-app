@@ -4,20 +4,15 @@ html, table, tr, td {
 }
 
 body {
+  font-family: "helvetica neue", helvetica, arial, sans-serif;
+  color: black;
   background-color: #ffd;
 }
 
-/*.box {
-  font-family: helvetica, arial, sans-serif;
-  font-size: 18px;
-  text-align: center;
-  border: 1px solid black;
-  max-height: 50px;
-  max-width: 50px;
-  min-height: 50px;
-  min-width: 50px;
+button {
+  font-family: "helvetica neue", helvetica, arial, sans-serif;
 }
-*/
+
 .selected {
   background-color: #9f9;
 }
@@ -37,25 +32,6 @@ body {
   vertical-align: middle;
 }
 
-/*.square-right {
-  border-right: 4px solid #333;
-}
-
-.square-bottom {
-  border-bottom: 4px solid #333;
-}
-*/
-
-/*#board {
-  height: 450px;
-}
-
-#controls {
-  position: absolute;
-  top: 460px;
-}
-*/
-
 .blurred {
   -webkit-filter: grayscale(0.8) blur(6px);
 }
@@ -67,10 +43,14 @@ table {
 
 .board {
   border: 2px solid red;
+  margin: auto;
+}
+
+#controls {
+  text-align: center;
 }
 
 .box {
-  font-family: "helvetica neue";
   font-size: 32px;
   border: 1px solid black;
   width: 40px;
