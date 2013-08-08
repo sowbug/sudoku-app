@@ -13,10 +13,7 @@ function newPuzzle(boardDom) {
     }
   }
   var solver = new Solver();
-  solver.start(board);
-  for (var i = 0; i < 81; ++i) {
-    board.boxes[i].setValue(solver.picks[i] ? solver.picks[i] : 0);
-  }
+  var result = solver.start(board);
   var generator = new Generator();
   var generatedBoard = generator.start(board);
   for (var i = 0; i < 81; ++i) {
@@ -83,5 +80,9 @@ onload = function() {
   };
   document.querySelector("#new").onclick = function(e) {
     board = newPuzzle(boardDom);
+  };
+  document.querySelector("#check").onclick = function(e) {
+    var solver = new Solver();
+    console.log(solver.start(board));
   };
 };

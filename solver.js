@@ -1,39 +1,27 @@
 Solver = function() {
-  this.boxesToSolve = [];
-  this.picks = [];
-  for (var i = 0; i < 81; ++i) {
-    this.boxesToSolve[i] = i;
-    this.picks[i] = 0;
-  }
 };
 
 Solver.prototype.start = function(board) {
-  this.board = new Board();
-  this.board.copy(board);
-  this.solve(0);
+  this.board = board;
+  return this.solve(0);
 };
 
-Solver.prototype.solve = function(virtualBoxIndex) {
+Solver.prototype.solve = function(boxIndex) {
   // If we've solved the last box, we're done!
-  if (virtualBoxIndex == 81)
+  if (boxIndex == 81)
     return true;
-  var boxIndex = this.boxesToSolve[virtualBoxIndex];
   var box = this.board.boxes[boxIndex];
   var candidates = this.board.getCandidates(boxIndex);
   var isBoxFixed = box > 0;
-  while (candidates.length > 0) {
+  while (candidates.length > 0 || isBoxFixed) {
     var pick;
     if (isBoxFixed) {
       pick = box.value;
     } else {
-      if (candidates.length == 1)
-        pick = candidates[0];
-      else
-        pick = candidates[Math.floor(Math.random() * candidates.length)];
-      this.picks[boxIndex] = pick;
+      pick = candidates[Math.floor(Math.random() * candidates.length)];
       box.setValue(pick);
     }
-    if (this.solve(virtualBoxIndex + 1))
+    if (this.solve(boxIndex + 1))
       return true;
 
     // Backtrack.

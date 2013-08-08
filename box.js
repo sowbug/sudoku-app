@@ -25,10 +25,8 @@ Box.prototype.setValue = function(newValue) {
     return false;
   }
 
-  // if (newValue > 0 && !this.isValidValue(newValue))
-  //   return false;
-
   this.board.removeMask(this.column, this.row, this.square, this.value);
+
   this.value = newValue;
 
   // Zero == clear it.
