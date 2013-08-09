@@ -6,3 +6,8 @@ for his easy-to-understand [Sudoku generator](http://davidbau.com/archives/2006/
 article. I didn't copy his code, but I did take the spirit of the algorithm.
 
 [Available in the Chrome Web Store today!](https://chrome.google.com/webstore/detail/pdabcaeppjejdnmcfnhnfboocbhnkbki/)
+
+Contributors
+============
+* [Mike Tsao](https://github.com/sowbug)
+* [Renato Mangini](https://github.com/mangini)
