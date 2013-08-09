@@ -147,39 +147,49 @@ onload = function() {
     toSelect.domElement.classList.add('selected');
   };
 
+  var isArrowKey = function(keyCode) {
+    return (keyCode >= 37 && keyCode <= 40 );
+  }
 
-  // TODO(miket): refactor, consolidate with onkeypress handler.
-  document.onkeydown = function(e) {
-    if (selectedBox < 0)
+  var isClearBoxKey = function(keyCode) {
+    return (keyCode == 8 || keyCode == 32 ||
+        keyCode == 46 || keyCode == 48);  // backspace, space, delete and zero
+  }
+
+  var isValidNumberKey = function(keyCode) {
+    return (keyCode >= 49 && keyCode <= 58 );
+  }
+
+
+  var processArrowKey = function(e) {
+    if ( selectedBox < 0 ) {
+      selectBox(0);
       return;
-    var box = board.getBox(selectedBox);
-    var changed = false;
-
-    if (e.keyCode == 8 || e.keyCode == 32 ||
-        e.keyCode == 46 || e.keyCode == 48) {  // backspace, space, delete and zero
-      changed |= board.clearBox(selectedBox);
-      box.domElement.innerHTML = '';
-
-    } else if (e.keyCode >= 37 && e.keyCode <= 40 ) {  // arrows
-      var neighbor;
-      var isShiftCol = e.keyCode===37 || e.keyCode===39;   // left and right, shift col
-      var isForward = e.keyCode>=39; // right and down is forward
-      if (e.ctrlKey) {
-        neighbor = board.getNavigableNeighborBox( selectedBox, isShiftCol, isForward);
-      } else {
-        neighbor = board.getNeighborBox( selectedBox, isShiftCol, isForward?1:-1);
-      }
-      if (neighbor) {
-        selectBox(neighbor);
-      }
     }
+    var neighbor;
+    var isShiftCol = e.keyCode===37 || e.keyCode===39;   // left and right, shift col
+    var isForward = e.keyCode>=39; // right and down is forward
+    if (e.ctrlKey) {
+      neighbor = board.getNavigableNeighborBox( selectedBox, isShiftCol, isForward);
+    } else {
+      neighbor = board.getNeighborBox( selectedBox, isShiftCol, isForward?1:-1);
+    }
+    if (neighbor) {
+      selectBox(neighbor);
+    }
+  };
+
+  var processClearBoxKey = function() {
+    var box = board.getBox(selectedBox);
+    var changed = board.clearBox(selectedBox);
+    box.domElement.innerHTML = '';
 
     if (changed) {
       if (boardHasProblem) {
         checkBoard();
       }
     }
-  };
+  }
 
   boardDom.addEventListener('click', function(e) {
     if (!e.target.box || e.target.box.isFixed()) {
@@ -187,6 +197,15 @@ onload = function() {
     }
     selectBox(e.target.box.index);
   });
+
+  // TODO(miket): refactor, consolidate with onkeypress handler.
+  document.onkeydown = function(e) {
+    if ( isArrowKey(e.keyCode) ) {
+      processArrowKey(e);
+    } else if ( isClearBoxKey(e.keyCode) && selectBox >= 0 ) {
+      processClearBoxKey();
+    }
+  };
 
   document.onkeypress = function(e) {
     if (selectedBox < 0)
@@ -196,7 +215,7 @@ onload = function() {
       return;
     }
     var changed = false;
-    if (e.keyCode >= 49 && e.keyCode <= 58) {
+    if (isValidNumberKey(e.keyCode)) {
       var value = e.keyCode - 48;
       changed = board.setBox(selectedBox, value);
       box.domElement.innerHTML = value;
