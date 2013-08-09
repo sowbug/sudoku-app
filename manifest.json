@@ -1,7 +1,7 @@
 {
   "name": "Sudoku",
   "description": "Play Sudoku on your Chromebook!",
-  "version": "0.0.3.0",
+  "version": "0.0.4.0",
   "app": {
     "background": {
       "scripts": ["background.js"]
