@@ -4,9 +4,10 @@ html, table, tr, td {
 }
 
 body {
-  font-family: "helvetica neue", helvetica, arial, sans-serif;
-  color: blue;
   background-color: lemonchiffon;
+  color: blue;
+  font-family: "helvetica neue", helvetica, arial, sans-serif;
+  margin: 8px;
 }
 
 table {
@@ -15,10 +16,12 @@ table {
 }
 
 button {
-  font-family: "helvetica neue", helvetica, arial, sans-serif;
   background-color: lightgray;
   border: 1px solid blue;
   color: black;
+  font-family: "helvetica neue", helvetica, arial, sans-serif;
+  font-size: 18px;
+  padding: 2px 6px 0 6px;
 }
 
 .selected {
@@ -66,11 +69,11 @@ button {
 }
 
 .box {
-  font-size: 32px;
   border: 1px solid blue;
-  width: 40px;
+  font-size: 32px;
   height: 40px;
   text-align: center;
+  width: 40px;
 }
 
 .box:hover {
@@ -82,7 +85,7 @@ button {
 }
 
 #controls {
+  margin: 4px 0 0 0;
+  padding: 2px 0 0 0;
   text-align: center;
-  margin: 4px;
-  padding: 2px;
 }
