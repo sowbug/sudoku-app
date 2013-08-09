@@ -57,6 +57,28 @@ Board.prototype.getBoxByColumnAndRow = function(column, row) {
   return this.boxes[column + row * 9];
 };
 
+Board.prototype.getNavigableNeighborBox = function(index, isShiftCol, isForward) {
+  for (var i = 1; i<9; i++) {
+    var box = this.getNeighborBox(index, isShiftCol, isForward?i:-i);
+    if (!box.isFixed())
+      return box;
+  }
+  return null;
+}
+
+Board.prototype.getNeighborBox = function(index, isShiftCol, ammt) {
+  var column = index % 9;
+  var row = Math.floor(index / 9);
+
+  if (isShiftCol) {
+    column = ( column + ammt + 9 ) % 9;
+  } else {
+    row = ( row + ammt + 9 ) % 9;
+  }
+  index = row * 9 + column;
+  return this.boxes[index];
+}
+
 Board.prototype.getBox = function(index) {
   return this.boxes[index];
 };
