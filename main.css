@@ -5,8 +5,8 @@ html, table, tr, td {
 
 body {
   font-family: "helvetica neue", helvetica, arial, sans-serif;
-  color: black;
-  background-color: #ffd;
+  color: blue;
+  background-color: lemonchiffon;
 }
 
 table {
@@ -16,21 +16,32 @@ table {
 
 button {
   font-family: "helvetica neue", helvetica, arial, sans-serif;
-  background-color: #eee;
+  background-color: lightgray;
   border: 1px solid blue;
   color: black;
 }
 
 .selected {
-  background-color: #9f9;
+  background-color: greenyellow;
 }
 
 .fixed {
-  color: gray;
+  color: darkgray;
 }
 
 .invalid {
-  background-color: #f88;
+  background-color: tomato;
+  font-weight: bold;
+}
+
+.invalid.fixed {
+  background-color: tomato;
+  color: black;
+  font-weight: normal;
+}
+
+.invalid.selected {
+  background-color: red;
   font-weight: bold;
 }
 
@@ -60,6 +71,10 @@ button {
   width: 40px;
   height: 40px;
   text-align: center;
+}
+
+.box:hover {
+  background-color: gold;
 }
 
 .square {

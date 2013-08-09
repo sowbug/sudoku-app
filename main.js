@@ -144,6 +144,23 @@ onload = function() {
       board.getBox(invalidBoxes[i]).domElement.classList.add('invalid');
   };
 
+  // TODO(miket): refactor, consolidate with onkeypress handler.
+  document.onkeydown = function(e) {
+    if (selectedBox < 0)
+      return;
+    var box = board.getBox(selectedBox);
+    var changed = false;
+    if (e.keyCode == 8) {
+      changed |= board.clearBox(selectedBox);
+      box.domElement.innerHTML = '';
+    }
+    if (changed) {
+      if (boardHasProblem) {
+        checkBoard();
+      }
+    }
+  };
+
   document.onkeypress = function(e) {
     if (selectedBox < 0)
       return;
