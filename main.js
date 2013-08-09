@@ -152,8 +152,9 @@ onload = function() {
   }
 
   var isClearBoxKey = function(keyCode) {
+    // backspace, space, delete and zero
     return (keyCode == 8 || keyCode == 32 ||
-        keyCode == 46 || keyCode == 48);  // backspace, space, delete and zero
+        keyCode == 46 || keyCode == 48);
   }
 
   var isValidNumberKey = function(keyCode) {
@@ -162,17 +163,21 @@ onload = function() {
 
 
   var processArrowKey = function(e) {
-    if ( selectedBox < 0 ) {
+    if (selectedBox < 0) {
       selectBox(0);
       return;
     }
     var neighbor;
-    var isShiftCol = e.keyCode===37 || e.keyCode===39;   // left and right, shift col
-    var isForward = e.keyCode>=39; // right and down is forward
+    // left and right, shift col
+    var isShiftCol = e.keyCode === 37 || e.keyCode === 39;
+    // right and down is forward
+    var isForward = e.keyCode >= 39;
     if (e.ctrlKey) {
-      neighbor = board.getNavigableNeighborBox( selectedBox, isShiftCol, isForward);
+      neighbor = board.getNavigableNeighborBox(selectedBox,
+        isShiftCol, isForward);
     } else {
-      neighbor = board.getNeighborBox( selectedBox, isShiftCol, isForward?1:-1);
+      neighbor = board.getNeighborBox(selectedBox,
+        isShiftCol, isForward ? 1 : -1);
     }
     if (neighbor) {
       selectBox(neighbor);
@@ -198,11 +203,10 @@ onload = function() {
     selectBox(e.target.box.index);
   });
 
-  // TODO(miket): refactor, consolidate with onkeypress handler.
   document.onkeydown = function(e) {
-    if ( isArrowKey(e.keyCode) ) {
+    if (isArrowKey(e.keyCode)) {
       processArrowKey(e);
-    } else if ( isClearBoxKey(e.keyCode) && selectBox >= 0 ) {
+    } else if (isClearBoxKey(e.keyCode) && selectedBox >= 0) {
       processClearBoxKey();
     }
   };
