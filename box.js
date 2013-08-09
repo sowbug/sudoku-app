@@ -8,6 +8,8 @@ Box = function(board, index, column, row, square) {
   // 0..81
   this.index = index;
 
+  this.fixed = false;
+
   // 0..8
   this.column = column;
   this.row = row;
@@ -19,13 +21,14 @@ Box.prototype.toString = function() {
     + ", " + this.board.rows[this.row] + ", " + this.board.squares[this.square] + ")";
 };
 
-Box.prototype.setValue = function(newValue) {
+Box.prototype.setValue = function(newValue, fixed) {
   if (newValue < 0 || newValue > 9) {
     console.log("invalid proposed value: " + newValue);
     return false;
   }
 
   this.value = newValue;
+  this.fixed = fixed;
   this.board.regenerateMasks();
 
   // Zero == clear it.
@@ -50,4 +53,8 @@ Box.prototype.isValid = function() {
   if (this.value == 0)
     return true;
   return this.isValidValue(this.value);
+}
+
+Box.prototype.isFixed = function() {
+  return this.fixed == true;
 }

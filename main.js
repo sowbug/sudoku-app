@@ -3,10 +3,6 @@ var pauseTime;
 var selectedBox = -1;
 var startTime;
 
-function selectBox(index) {
-
-}
-
 function newPuzzle(boardDom) {
   var board = new Board();
   for (var j = 0; j < 9; ++j) {
@@ -23,17 +19,12 @@ function newPuzzle(boardDom) {
   for (var i = 0; i < 81; ++i) {
     var box = board.getBox(i);
     if (box.value > 0) {
+      box.fixed = true;
       box.domElement.innerHTML = box.value;
       box.domElement.classList.add('fixed');
     } else {
       box.domElement.innerHTML = '';
       box.domElement.classList.remove('fixed');
-      box.domElement.onclick = function(e) {
-        if (selectedBox >= 0)
-          board.getBox(selectedBox).domElement.classList.remove('selected');
-        selectedBox = this.box.index;
-        board.getBox(selectedBox).domElement.classList.add('selected');
-      }.bind(box.domElement);
     }
   }
   startTime = new Date();
@@ -101,6 +92,7 @@ function createBoard() {
   return boardDom;
 }
 
+
 onload = function() {
   var boardDom = createBoard();
   var board = newPuzzle(boardDom);
@@ -144,20 +136,74 @@ onload = function() {
       board.getBox(invalidBoxes[i]).domElement.classList.add('invalid');
   };
 
-  // TODO(miket): refactor, consolidate with onkeypress handler.
-  document.onkeydown = function(e) {
-    if (selectedBox < 0)
-      return;
-    var box = board.getBox(selectedBox);
-    var changed = false;
-    if (e.keyCode == 8) {
-      changed |= board.clearBox(selectedBox);
-      box.domElement.innerHTML = '';
+
+  var selectBox = function(toSelect) {
+    if (typeof toSelect === 'number') {
+      toSelect = board.getBox(toSelect);
     }
+    if (selectedBox >= 0)
+      board.getBox(selectedBox).domElement.classList.remove('selected');
+    selectedBox = toSelect.index;
+    toSelect.domElement.classList.add('selected');
+  };
+
+  var isArrowKey = function(keyCode) {
+    return (keyCode >= 37 && keyCode <= 40 );
+  }
+
+  var isClearBoxKey = function(keyCode) {
+    return (keyCode == 8 || keyCode == 32 ||
+        keyCode == 46 || keyCode == 48);  // backspace, space, delete and zero
+  }
+
+  var isValidNumberKey = function(keyCode) {
+    return (keyCode >= 49 && keyCode <= 58 );
+  }
+
+
+  var processArrowKey = function(e) {
+    if ( selectedBox < 0 ) {
+      selectBox(0);
+      return;
+    }
+    var neighbor;
+    var isShiftCol = e.keyCode===37 || e.keyCode===39;   // left and right, shift col
+    var isForward = e.keyCode>=39; // right and down is forward
+    if (e.ctrlKey) {
+      neighbor = board.getNavigableNeighborBox( selectedBox, isShiftCol, isForward);
+    } else {
+      neighbor = board.getNeighborBox( selectedBox, isShiftCol, isForward?1:-1);
+    }
+    if (neighbor) {
+      selectBox(neighbor);
+    }
+  };
+
+  var processClearBoxKey = function() {
+    var box = board.getBox(selectedBox);
+    var changed = board.clearBox(selectedBox);
+    box.domElement.innerHTML = '';
+
     if (changed) {
       if (boardHasProblem) {
         checkBoard();
       }
+    }
+  }
+
+  boardDom.addEventListener('click', function(e) {
+    if (!e.target.box || e.target.box.isFixed()) {
+      return;
+    }
+    selectBox(e.target.box.index);
+  });
+
+  // TODO(miket): refactor, consolidate with onkeypress handler.
+  document.onkeydown = function(e) {
+    if ( isArrowKey(e.keyCode) ) {
+      processArrowKey(e);
+    } else if ( isClearBoxKey(e.keyCode) && selectBox >= 0 ) {
+      processClearBoxKey();
     }
   };
 
@@ -165,17 +211,14 @@ onload = function() {
     if (selectedBox < 0)
       return;
     var box = board.getBox(selectedBox);
+    if (box.isFixed()) {
+      return;
+    }
     var changed = false;
-    if (e.keyCode >= 49 && e.keyCode <= 58) {
+    if (isValidNumberKey(e.keyCode)) {
       var value = e.keyCode - 48;
       changed = board.setBox(selectedBox, value);
       box.domElement.innerHTML = value;
-    }
-
-    // Why can't I get the delete key?
-    if (e.keyCode == 32 || e.keyCode == 48) {
-      changed |= board.clearBox(selectedBox);
-      box.domElement.innerHTML = '';
     }
     if (changed) {
       if (boardHasProblem) {
@@ -208,4 +251,5 @@ onload = function() {
       startTime.setTime(startTime.getTime() + elapsed);
     }
   };
+
 };
